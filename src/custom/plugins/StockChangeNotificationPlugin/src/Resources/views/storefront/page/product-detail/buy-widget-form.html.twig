@@ -1,0 +1,17 @@
+{% sw_extends '@Storefront/storefront/page/product-detail/buy-widget-form.html.twig' %}
+
+{% block page_product_detail_buy_form_inner %}
+    {{ parent() }}
+    <div class="row g-2 mt-2">
+        <form action="{{ path('ware.email.save') }}" method="POST">
+            <div class="form-group col-sm-6 d-flex">
+                <input type="text" class="form-control" name="wareemail-customer-email" value="{{context.customer.customFields['custom_field_name'] }}" id="customFields[custom_field_name]" required="required">
+            </div>
+            <div class="form-group col-sm-6">
+                <button class="btn btn-primary" name="wareemail-customer-email-save" value="{{context.customer.customFields['custom_field_name'] }}" id="customFields[custom_field_name]">Save</button>
+            </div>
+            <input type="hidden" name="wareemail-product-number" value="{{ page.product.productNumber }}">
+        </form>
+    </div>
+{% endblock %}
+
