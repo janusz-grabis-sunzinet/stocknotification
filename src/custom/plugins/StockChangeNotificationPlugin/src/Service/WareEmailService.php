@@ -7,6 +7,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 
+
 class WareEmailService
 {
 
@@ -48,13 +49,11 @@ class WareEmailService
 
     public function  checkStockChange() {
 
-        $f = fopen("/tmp/dmp.txt", "w+");
-        if ($f) {
-            fwrite($f, "test, test");
-            fflush($f);
-            fclose($f);
+        $wareEmails  = $this->wareEmailRepository->search(new Criteria(), Context::createDefaultContext());
+        foreach ($wareEmails as $wareEmail) {
+
+            echo "tada";
+
         }
-
-
     }
 }

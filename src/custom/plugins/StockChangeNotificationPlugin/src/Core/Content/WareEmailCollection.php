@@ -1,6 +1,8 @@
 <?php declare(strict_types=1);
 
-use StockChangeNotificationPlugin\Core\Content\WareEmail;
+namespace StockChangeNotificationPlugin\Core\Content;
+
+use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 
 class WareEmailCollection extends EntityCollection
 {
