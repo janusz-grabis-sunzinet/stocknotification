@@ -3,7 +3,7 @@ version: "3"
 services:
 
     shopware:
-      image: dockware/dev:latest
+      image: frameworkspl/dockware_nosource:latest
       container_name: shopware
       ports:
          - "80:80"
@@ -16,8 +16,8 @@ services:
          - web
       environment:
          - XDEBUG_ENABLED=1
-#      volumes:
-#        - ./src:/var/www/html
+      volumes:
+        - ./src:/var/www/html
 
 networks:
   web:
