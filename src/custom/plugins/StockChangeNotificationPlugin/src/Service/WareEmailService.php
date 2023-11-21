@@ -64,18 +64,15 @@ class WareEmailService
     public function  checkStockChange() {
 
         $context = Context::createDefaultContext();
-        $wareEmails  = $this->wareEmailRepository->search(new Criteria(), $context);
+        $criteria = new Criteria();
+        $criteria->addAssociation('product');
+        $wareEmails  = $this->wareEmailRepository->search($criteria, $context);
 
         foreach ($wareEmails as $wareEmail) {
-
-            $criteria = new Criteria();
-            $criteria->addFilter(new EqualsFilter('id', $wareEmail->productId));
-            $product  = $this->productRepository->search($criteria, $context)->first();
-
             //TODO: Load full product
             //TODO: Make sure we have the product before sending email
 
-            $this->sendStockChangeEmail($wareEmail->email, $product->productNumber); //TODO: change to actual name of a product
+            $this->sendStockChangeEmail($wareEmail->email, $wareEmail->product->productNumber); //TODO: change to actual name of a product
         }
     }
 }
