@@ -47,13 +47,35 @@ class WareEmailService
         );
     }
 
+    protected function sendStockChangeEmail($to, $productName) {
+
+        //TODO: use swift mailer instead
+        $subject = "$productName is now available";
+        $message = "Your product is now available";
+        $headers = array(
+            'From' => 'noreply@myshop.com',
+            'X-Mailer' => 'PHP/' . phpversion(),
+            'MIME-Version' => '1.0',
+            'Content-Type' => 'text/html; charset=UTF-8'
+        );
+        return mail($to, $subject, $message, $headers);
+    }
+
     public function  checkStockChange() {
 
-        $wareEmails  = $this->wareEmailRepository->search(new Criteria(), Context::createDefaultContext());
+        $context = Context::createDefaultContext();
+        $wareEmails  = $this->wareEmailRepository->search(new Criteria(), $context);
+
         foreach ($wareEmails as $wareEmail) {
 
-            echo "tada";
+            $criteria = new Criteria();
+            $criteria->addFilter(new EqualsFilter('id', $wareEmail->productId));
+            $product  = $this->productRepository->search($criteria, $context)->first();
 
+            //TODO: Load full product
+            //TODO: Make sure we have the product before sending email
+
+            $this->sendStockChangeEmail($wareEmail->email, $product->productNumber); //TODO: change to actual name of a product
         }
     }
 }
