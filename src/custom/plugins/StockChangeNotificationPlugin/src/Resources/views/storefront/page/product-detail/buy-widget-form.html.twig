@@ -2,6 +2,8 @@
 
 {% block page_product_detail_buy_form_inner %}
     {{ parent() }}
+
+    {% if page.product.availableStock == 0 %}
     <form action="{{ path('ware.email.save') }}" method="POST">
         <div class="row g-2 mt-2">
                 <div class="form-group col-sm-6 d-flex">
@@ -13,5 +15,6 @@
                 <input type="hidden" name="wareemail-product-number" value="{{ page.product.productNumber }}">
         </div>
     </form>
+    {% endif %}
 {% endblock %}
 
