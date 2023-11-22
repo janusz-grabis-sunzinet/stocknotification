@@ -7,6 +7,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\AndFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\OrFilter;
 
 
 class WareEmailService
@@ -59,7 +60,7 @@ class WareEmailService
         );
     }
 
-    protected function sendStockChangeEmail($to, $productName) {
+    protected function sendStockChangeEmail($to, $productName) : boolean {
 
         //TODO: use swift mailer instead
         $subject = "$productName is now available";
@@ -73,42 +74,69 @@ class WareEmailService
         return mail($to, $subject, $message, $headers);
     }
 
-    public function  checkStockChange() {
+    /**
+     * @param array<string> $productPrimaryKeys
+     * @return void
+     */
+    public function notifyMultipleProductsStockChange(array $productPrimaryKeys) : void
+    {
+        $productFilters = [];
+        foreach ($productPrimaryKeys as $productPrimaryKey) {
+            $productFilters[] = new EqualsFilter('productId', $productPrimaryKey);
+        }
+        $criteria = new Criteria();
+        $criteria->addAssociation('product');
+        $criteria->addFilter(new OrFilter($productFilters));
 
         $context = Context::createDefaultContext();
+        $wareEmails = $this->wareEmailRepository->search($criteria, $context);
 
+        $this->notifyProductStockChanges($wareEmails);
+
+    }
+
+    public function checkStockChange() {
+
+        $criteria = new Criteria();
+        $criteria->addAssociation('product');
+        $criteria->addAssociation('product.translations');
+        $wareEmails  = $this->wareEmailRepository->search($criteria, Context::createDefaultContext());
+
+        $this->notifyProductStockChanges($wareEmails);
+
+    }
+
+    protected function notifyProductStockChanges($wareEmails) {
+
+        $context = Context::createDefaultContext();
         $criteria = new Criteria();
 
         //TODO: select language based on system settings
         $criteria->addFilter(new EqualsFilter('name', 'English'));
         $language = $this->languageRepository->search($criteria, $context)->first();
 
-        $criteria = new Criteria();
-        $criteria->addAssociation('product');
-        $criteria->addAssociation('product.translations');
-        $wareEmails  = $this->wareEmailRepository->search($criteria, $context);
-
         foreach ($wareEmails as $wareEmail) {
-            //TODO: Load full product
-            //TODO: Make sure we have the product before sending email
+            //TODO: Load prodocut translation
+            //TODO: Prepare nice email template (twig?)
 
-            /** Attempting to load translations for a product - DOES NOT WORK
             $criteria = new Criteria();
             $productId = $wareEmail->product->getId();
             $criteria->addFilter(new AndFilter([
-                new EqualsFilter('productId', $wareEmail->product->getId()),
-                new EqualsFilter('languageId', $language->getId())
-                ]
+                $criteria->addFilter(new AndFilter([
+            new EqualsFilter('id', $wareEmail->product->getId()),
+            //new EqualsFilter('languageId', $language->getId())
+            ]
             ));
-            $productTranslation = $this->productTranslationRepository->search($criteria, $context)->first();
-            */
+            $productTranslation = $this->productRepository->search($criteria, $context)->first();
+
 
             if ($wareEmail->product->availableStock > 0) {
 
-                $a = $wareEmail->product->getTranslation('name', $language->getId());
+                //$nameTranslated = $wareEmail->product->getTranslation('name', $language->getId());
 
                 $this->sendStockChangeEmail($wareEmail->email, $wareEmail->product->productNumber); //TODO: change to actual name of a product
             }
         }
     }
+
 }

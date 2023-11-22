@@ -7,5 +7,9 @@
     <services>
         <defaults autowire="true" autoconfigure="true"/>
         <prototype namespace="StockChangeNotificationPlugin\" resource="../../" exclude="../../{DependencyInjection,Resources}"/>
+
+        <service id="StockChangeNotificationPlugin\Subscriber\StockChangeSubscriber" class="StockChangeNotificationPlugin\Subscriber\StockChangeSubscriber">
+            <tag name="kernel.event_subscriber"/>
+        </service>
     </services>
 </container>

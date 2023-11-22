@@ -13,6 +13,6 @@ class StockChangeTask extends ScheduledTask
 
     public static function getDefaultInterval(): int
     {
-        return 300; // 5 minutes
+        return 60*60*24; // every 24 hours
     }
 }
