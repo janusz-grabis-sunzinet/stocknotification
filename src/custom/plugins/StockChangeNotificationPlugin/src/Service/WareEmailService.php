@@ -119,7 +119,10 @@ class WareEmailService
             //TODO: Load prodocut translation
             //TODO: Prepare nice email template (twig?)
 
-            if ($wareEmail->product->availableStock > 0) {
+            #Since we are calling this code in response to PRODUCT_WRITTEN_EVENT even and in that even value of stock_available
+            #is NOT yet updated, we need to check here value of stock (not stock_available)
+            #(stock_available will be updated laster)
+            if ($wareEmail->product->stock > 0) {
 
                 //$nameTranslated = $wareEmail->product->getTranslation('name', $language->getId());
 
