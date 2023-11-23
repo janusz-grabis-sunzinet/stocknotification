@@ -4,15 +4,16 @@ namespace StockChangeNotificationPlugin\Subscriber;
 
 use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Content\Product\ProductEvents;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityWriteResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Event\EntityWrittenEvent;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityWrittenEvent as EWE;
+use StockChangeNotificationPlugin\Service\WareEmailService;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class StockChangeSubscriber implements EventSubscriberInterface
 {
     protected WareEmailService $wareEmailService;
 
-    public function StockChangeSubscriber(WareEmailService $wareEmailService) {
+    public function __construct(WareEmailService $wareEmailService) {
         $this->wareEmailService = $wareEmailService;
     }
 
@@ -32,7 +33,7 @@ class StockChangeSubscriber implements EventSubscriberInterface
         $writeResults = $event->getWriteResults();
         foreach ($writeResults as $writeResult) {
             if ($writeResult->getEntityName() === ProductDefinition::ENTITY_NAME
-                && $writeResult->getOperation() === EWE::OPERATION_UPDATE)
+                && $writeResult->getOperation() === EntityWriteResult::OPERATION_UPDATE)
             {
                 $productsToNotify[] = $writeResult->getPrimaryKey();
             }
