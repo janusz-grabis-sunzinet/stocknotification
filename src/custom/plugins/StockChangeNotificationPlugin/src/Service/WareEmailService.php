@@ -119,17 +119,6 @@ class WareEmailService
             //TODO: Load prodocut translation
             //TODO: Prepare nice email template (twig?)
 
-            $criteria = new Criteria();
-            $productId = $wareEmail->product->getId();
-            $criteria->addFilter(new AndFilter([
-                $criteria->addFilter(new AndFilter([
-            new EqualsFilter('id', $wareEmail->product->getId()),
-            //new EqualsFilter('languageId', $language->getId())
-            ]
-            ));
-            $productTranslation = $this->productRepository->search($criteria, $context)->first();
-
-
             if ($wareEmail->product->availableStock > 0) {
 
                 //$nameTranslated = $wareEmail->product->getTranslation('name', $language->getId());
