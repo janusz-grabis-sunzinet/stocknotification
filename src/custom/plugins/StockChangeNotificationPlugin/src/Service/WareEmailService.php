@@ -60,7 +60,7 @@ class WareEmailService
         );
     }
 
-    protected function sendStockChangeEmail($to, $productName) : boolean {
+    protected function sendStockChangeEmail($to, $productName) : bool {
 
         //TODO: use swift mailer instead
         $subject = "$productName is now available";
