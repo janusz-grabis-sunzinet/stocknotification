@@ -25,7 +25,7 @@ use Symfony\Component\Routing\Annotation\Route;
     }
 
     #[Route(path: '/wareemail/save', name: 'ware.email.save', defaults: [])]
-    public function generateOrderXmlById(Request $request, Context $context)
+    public function emailProductSave(Request $request, Context $context)
     {
         $email = $request->request->get('wareemail-customer-email');
         $productNumber = $request->request->get('wareemail-product-number');
@@ -34,6 +34,17 @@ use Symfony\Component\Routing\Annotation\Route;
 
         $route = $request->headers->get('referer');
         return $this->redirect($route);
-
     }
+
+    #[Route(path: '/waremail/save/dynamic', name: 'ware.email.save.dynamic', defaults: [])]
+    public function emailProductSaveDynamic(Request $request, Context $context)  {
+
+        $content = $request->getContent();
+        $payload = json_decode($content, true);
+
+        $this->wareEmailService->saveWareEmail($payload['email'], $payload['product_number'], $context);
+
+        return new JsonResponse(['result' => 0]);
+    }
+
 }

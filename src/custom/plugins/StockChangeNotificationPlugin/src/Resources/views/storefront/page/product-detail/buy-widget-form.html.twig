@@ -4,17 +4,56 @@
     {{ parent() }}
 
     {% if page.product.availableStock == 0 %}
-    <form action="{{ path('ware.email.save') }}" method="POST">
+    {#  <form action="{{ path('ware.email.save') }}" method="POST"> #}
         <div class="row g-2 mt-2">
                 <div class="form-group col-sm-6 d-flex">
-                    <input type="text" class="form-control" name="wareemail-customer-email" value="{{context.customer.customFields['custom_field_name'] }}" id="customFields[custom_field_name]" required="required">
+                    <input type="text" class="form-control" name="wareemail-customer-email" value="" id="wareemail-email" required="required">
                 </div>
                 <div class="form-group col-sm-6">
-                    <button class="btn btn-primary" name="wareemail-customer-email-save" value="{{context.customer.customFields['custom_field_name'] }}" id="customFields[custom_field_name]">Save</button>
+                    <button class="btn btn-primary" name="wareemail-customer-email-save" value="" id="wareemail-save-button">Save</button>
                 </div>
                 <input type="hidden" name="wareemail-product-number" value="{{ page.product.productNumber }}">
         </div>
-    </form>
+    {# </form> #}
     {% endif %}
+
+    <script>
+        function onSaveEmailProductButtonClicked() {
+            let email = document.getElementById('wareemail-email').value;
+            let productNumber = '{{ page.product.productNumber }}';
+
+            //TODO: change this to DOM
+            if (email === '') {
+                alert('Email cannot be empty');
+                return false;
+            }
+
+            let payload = {
+                'email' : email,
+                'product_number': productNumber
+            }
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", '{{ path('ware.email.save.dynamic') }}', true);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    var responseData = JSON.parse(xhr.responseText);
+                    onSaveEmailProductResponse(responseData);
+                }
+            };
+
+            xhr.send(JSON.stringify(payload));
+            //prevent form from being sent
+            return false;
+        }
+
+        function onSaveEmailProductResponse(responseData) {
+            alert(responseData.result);
+        }
+
+        let saveEmailProductButton = document.getElementById('wareemail-save-button');
+        saveEmailProductButton.addEventListener('click', onSaveEmailProductButtonClicked);
+
+    </script>
 {% endblock %}
 
