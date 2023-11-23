@@ -43,7 +43,7 @@ class WareEmailService
      * @param Context $context
      * @return void
      */
-    public function saveWareEmail(string $email, string $productNumber, Context $context): void
+    public function saveWareEmail(string $email, string $productNumber, int $minStockCount, Context $context): void
     {
 
         $criteria = new Criteria();
@@ -55,7 +55,8 @@ class WareEmailService
         $this->wareEmailRepository->create([
             [
                 'email' => $email,
-                'productId' => $product->get('id')
+                'productId' => $product->get('id'),
+                'minStockCount' => $minStockCount
             ]], $context
         );
     }

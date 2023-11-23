@@ -39,6 +39,7 @@ class WareEmailDefinition extends EntityDefinition
         return new FieldCollection([
             (new IdField('id', 'id'))->addFlags(new Required(), new PrimaryKey()),
             (new StringField('email', 'email'))->addFlags(new Required()),
+            (new IntField('min_stock_count', 'minStockCount'))->addFlags(new Required()),
             new FkField('product_id', 'productId', ProductDefinition::class),
             new OneToOneAssociationField('product', 'product_id', 'id', ProductDefinition::class, false)
         ]);

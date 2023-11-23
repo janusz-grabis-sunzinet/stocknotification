@@ -14,5 +14,7 @@ class WareEmail extends Entity
 
     protected string $productId;
 
+    protected int $minStockCount;
+
 
 }

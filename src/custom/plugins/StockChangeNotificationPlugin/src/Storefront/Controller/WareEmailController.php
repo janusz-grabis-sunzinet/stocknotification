@@ -42,7 +42,7 @@ use Symfony\Component\Routing\Annotation\Route;
         $content = $request->getContent();
         $payload = json_decode($content, true);
 
-        $this->wareEmailService->saveWareEmail($payload['email'], $payload['product_number'], $context);
+        $this->wareEmailService->saveWareEmail($payload['email'], $payload['product_number'], (int)$payload['min_stock_count'], $context);
 
         return new JsonResponse(['result' => 0]);
     }

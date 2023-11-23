@@ -5,14 +5,28 @@
 
     {% if page.product.availableStock == 0 %}
     {#  <form action="{{ path('ware.email.save') }}" method="POST"> #}
-        <div class="row g-2 mt-2">
-                <div class="form-group col-sm-6 d-flex">
-                    <input type="text" class="form-control" name="wareemail-customer-email" value="" id="wareemail-email" required="required">
-                </div>
-                <div class="form-group col-sm-6">
-                    <button class="btn btn-primary" name="wareemail-customer-email-save" value="" id="wareemail-save-button">Save</button>
-                </div>
-                <input type="hidden" name="wareemail-product-number" value="{{ page.product.productNumber }}">
+        <div class="row mt-2">
+            <div class="col-12">
+                <span style="font-weight: bolder">Let me know when the product will be again available:</span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-6">
+                <select class="form-control" id="wareemail-min-stock-count">
+                    {% for i in 1..10 %}
+                        <option value="{{ i }}">Notify me when {{ i }} item(s) in stock</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group col-6">
+                <input type="text" class="form-control pl-0" name="wareemail-customer-email" value="" id="wareemail-email" placeholder="Your e-mail" required="required">
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-12">
+                <button class="btn btn-primary" name="wareemail-customer-email-save" value="" id="wareemail-save-button">Save</button>
+            </div>
+            <input type="hidden" name="wareemail-product-number" value="{{ page.product.productNumber }}">
         </div>
     {# </form> #}
     {% endif %}
@@ -21,6 +35,7 @@
         function onSaveEmailProductButtonClicked() {
             let email = document.getElementById('wareemail-email').value;
             let productNumber = '{{ page.product.productNumber }}';
+            let minStockCount = document.getElementById('wareemail-min-stock-count').value;
 
             //TODO: change this to DOM
             if (email === '') {
@@ -30,7 +45,8 @@
 
             let payload = {
                 'email' : email,
-                'product_number': productNumber
+                'product_number': productNumber,
+                'min_stock_count': minStockCount
             }
 
             var xhr = new XMLHttpRequest();

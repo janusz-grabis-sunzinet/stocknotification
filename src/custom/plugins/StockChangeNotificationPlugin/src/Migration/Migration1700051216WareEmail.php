@@ -36,7 +36,7 @@ SQL;
     public function updateDestructive(Connection $connection): void
     {
         // implement update destructive
-        $query = "DROP TABLE ware_email";
+        $query = "DROP TABLE `ware_email`";
         $connection->executeStatement($query);
     }
 }
