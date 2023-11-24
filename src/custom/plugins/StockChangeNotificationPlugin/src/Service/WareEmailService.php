@@ -81,7 +81,7 @@ class WareEmailService
      * @param array<string> $productPrimaryKeys
      * @return void
      */
-    public function notifyMultipleProductsStockChange(array $productPrimaryKeys) : void
+    public function notifyProductsStockChangeUsingPrimaryKeys(array $productPrimaryKeys) : void
     {
         $productFilters = [];
         foreach ($productPrimaryKeys as $productPrimaryKey) {

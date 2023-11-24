@@ -39,6 +39,6 @@ class StockChangeSubscriber implements EventSubscriberInterface
             }
         }
 
-        $this->wareEmailService->notifyMultipleProductsStockChange($productsToNotify);
+        $this->wareEmailService->notifyProductsStockChangeUsingPrimaryKeys($productsToNotify);
     }
 }

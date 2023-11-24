@@ -24,18 +24,6 @@ use Symfony\Component\Routing\Annotation\Route;
         $this->wareEmailService = $wareEmailService;
     }
 
-    #[Route(path: '/wareemail/save', name: 'ware.email.save', defaults: [])]
-    public function emailProductSave(Request $request, Context $context)
-    {
-        $email = $request->request->get('wareemail-customer-email');
-        $productNumber = $request->request->get('wareemail-product-number');
-
-        $this->wareEmailService->saveWareEmail($email, $productNumber, $context);
-
-        $route = $request->headers->get('referer');
-        return $this->redirect($route);
-    }
-
     #[Route(path: '/waremail/save/dynamic', name: 'ware.email.save.dynamic', defaults: [])]
     public function emailProductSaveDynamic(Request $request, Context $context)  {
 
