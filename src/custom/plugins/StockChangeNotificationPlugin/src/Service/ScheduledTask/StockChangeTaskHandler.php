@@ -24,6 +24,11 @@ class StockChangeTaskHandler extends ScheduledTaskHandler  {
 
     public function run(): void
     {
+        //TODO: This can be optimized:
+        // 1. query: select productId, sum(minStockCount) from ware_email group by (productId)
+        // 2. iterate once through the results, build queries to update custom field for each product
+        $this->wareEmailService->updateNumberOfItemsWantedByCustomers();
+
         $this->wareEmailService->checkStockChange();
     }
 
