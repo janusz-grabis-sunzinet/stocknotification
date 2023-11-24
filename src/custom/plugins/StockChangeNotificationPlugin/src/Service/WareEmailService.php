@@ -55,15 +55,24 @@ class WareEmailService
         $criteria->addFilter(new EqualsFilter('productNumber', $productNumber));
         $product  = $this->productRepository->search($criteria, $context)->first();
 
-        //TODO: before creating new entry - check if there is no existing one already
+        $wareEmailUpdate = [
+            'email' => $email,
+            'productId' => $product->get('id'),
+            'minStockCount' => $minStockCount
+        ];
 
-        $this->wareEmailRepository->create([
-            [
-                'email' => $email,
-                'productId' => $product->get('id'),
-                'minStockCount' => $minStockCount
-            ]], $context
-        );
+        //check if that email is not already registered for this product, if it is update instead of inserting one more time
+        $criteria = new Criteria();
+        $criteria->addFilter(new AndFilter([
+            new EqualsFilter('productId', $product->id),
+            new EqualsFilter('email', $email)
+        ]));
+        $wareEmail = $this->wareEmailRepository->search($criteria, $context)->first();
+        if ($wareEmail) {
+            $wareEmailUpdate['id'] = $wareEmail->id;
+        }
+
+        $this->wareEmailRepository->upsert([$wareEmailUpdate], $context);
     }
 
     public function checkStockChange() {
