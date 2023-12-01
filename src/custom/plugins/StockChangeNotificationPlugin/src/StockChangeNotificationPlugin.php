@@ -8,17 +8,27 @@ use Shopware\Core\Framework\Plugin\Context\UninstallContext;
 
 class StockChangeNotificationPlugin extends Plugin
 {
+
     public function uninstall(UninstallContext $uninstallContext): void
     {
+        $connection = $this->container->get('Doctrine\DBAL\Connection');
 
-        //TODO: run destructive migrations here
-        //$uninstallContext->getMigrationCollection()->migrateInPlace();
+        //check if table exist before running migrations
+        $query = "SELECT count(*) as table_count FROM `information_schema`.`columns` WHERE table_name = 'ware_email'";
+        $result = $connection->executeQuery($query);
+        $row = $result->fetchAssociative();
+        $tableCount = $row['table_count'];
+
+        if ($tableCount > 0) {
+            $uninstallContext->getMigrationCollection()->migrateDestructiveInPlace();
+        }
+
     }
 
     public function install(InstallContext $installContext): void
     {
-        //TODO: run migrations here
-        //$installContext->getMigrationCollection()->migrateDestructiveInPlace();
+        //Apparently migrations run automatically when plugin is installed
+
     }
 
 
