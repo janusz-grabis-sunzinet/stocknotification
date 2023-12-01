@@ -4,7 +4,11 @@
     {{ parent() }}
 
     {% if page.product.availableStock == 0 %}
-    {#  <form action="{{ path('ware.email.save') }}" method="POST"> #}
+    {% if context.customer is not null %}
+        {% set customer_email = context.customer.email %}
+    {% else %}
+        {% set customer_email = '' %}
+    {% endif %}
         <div class="row mt-2">
             <div class="col-12">
                 <span style="font-weight: bolder">Let me know when the product will be again available:</span>
@@ -19,7 +23,7 @@
                 </select>
             </div>
             <div class="form-group col-6">
-                <input type="text" class="form-control pl-0" name="wareemail-customer-email" value="" id="wareemail-email" placeholder="Your e-mail" required="required">
+                <input type="text" class="form-control pl-0" name="wareemail-customer-email" value="{{ customer_email }}" id="wareemail-email" placeholder="Your e-mail" required="required">
             </div>
         </div>
         <div class="row">
@@ -28,7 +32,6 @@
             </div>
             <input type="hidden" name="wareemail-product-number" value="{{ page.product.productNumber }}">
         </div>
-    {# </form> #}
     {% endif %}
 
     <script>
