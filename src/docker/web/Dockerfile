@@ -1,8 +1,8 @@
 FROM frameworkspl/dockware_nosource:latest
-COPY src/files /var/www/html/files
+#COPY src/files /var/www/html/files
 COPY src/public /var/www/html/public
-COPY src/var /var/www/html/var
-COPY src/vendor /var/www/html/vendor
+#COPY src/var /var/www/html/var
+#COPY src/vendor /var/www/html/vendor
 RUN sudo chown -R www-data: /var/www/html
 RUN sudo apt-get update --fix-missing
 RUN sudo apt-get install -qq -y wget
