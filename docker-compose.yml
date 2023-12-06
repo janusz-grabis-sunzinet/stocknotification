@@ -3,10 +3,8 @@ version: "3"
 services:
 
     shopware:
-      build:
-        context: ./
-        dockerfile: ./src/docker/web/Dockerfile
-      container_name: shopware
+      image: dockware/dev:6.5.6.1
+      container_name: stocknotification_shopware
       ports:
          - "80:80"
          - "3306:3306"
@@ -19,17 +17,11 @@ services:
       environment:
          - XDEBUG_ENABLED=1
       volumes:
-        - ./src/bin:/var/www/html/bin
-        - ./src/config:/var/www/html/config
-        - ./src/custom:/var/www/html/custom
-        - ./src/composer.json:/var/www/html/composer.json
-        - ./src/.env:/var/www/html/.env
-        - ./src/docker/web/php-ini-smtp-dev.ini:/etc/php/8.1/cli/conf.d/php-ini-smtp-dev.ini:ro
-        - ./src/docker/web/php-ini-smtp-dev.ini:/etc/php/8.1/fpm/conf.d/php-ini-smtp-dev.ini:ro
-        - ./src/docker/web/php-ini-mem-limits.ini:/etc/php/8.1/cli/conf.d/php-ini-mem-limits.ini:ro
-        - ./src/docker/web/php-ini-mem-limits.ini:/etc/php/8.1/fpm/conf.d/php-ini-mem-limits.ini:ro
+        - "db_volume_stocknotification:/var/lib/mysql"
+        - "shop_volume_stocknotification:/var/www/html"
+        - "./src/custom/plugins/StockChangeNotificationPlugin:/var/www/html/custom/plugins/StockChangeNotificationPlugin"
     mail:
-      container_name: dockware_mailhog
+      container_name: stocknotification_mailhog
       image: mailhog/mailhog
       logging:
         driver: 'none'
@@ -41,3 +33,9 @@ services:
 networks:
   web:
     external: false
+
+volumes:
+  db_volume_stocknotification:
+    driver: local
+  shop_volume_stocknotification:
+    driver: local
