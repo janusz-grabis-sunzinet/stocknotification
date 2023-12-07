@@ -11,8 +11,8 @@
   "extra": {
     "shopware-plugin-class": "StockChangeNotificationPlugin\\StockChangeNotificationPlugin",
     "label": {
-      "de-DE": "Skeleton plugin",
-      "en-GB": "Skeleton plugin"
+      "de-DE": "Stock notification plugin",
+      "en-GB": "Stock notification plugin"
     }
   }
 }
